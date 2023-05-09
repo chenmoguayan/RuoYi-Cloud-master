@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hj.pay.mapper.PayChargeableMapper">
+    
+    <resultMap type="PayChargeable" id="PayChargeableResult">
+        <result property="coId"    column="co_id"    />
+        <result property="oId"    column="o_id"    />
+        <result property="pName" column="p_name" />
+        <result property="coTotalAmount"    column="co_total_amount"    />
+        <result property="coPayType"    column="co_pay_type"    />
+        <result property="coStatus"    column="co_status"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="isDeleted"    column="is_deleted"    />
+    </resultMap>
+
+    <sql id="selectPayChargeableVo">
+        select co_id, o_id, p_name, co_total_amount, co_pay_type, co_status, create_time, update_time, is_deleted from pay_chargeable
+    </sql>
+
+    <select id="selectPayChargeableList" parameterType="PayChargeable" resultMap="PayChargeableResult">
+        <include refid="selectPayChargeableVo"/>
+        <where>  
+            <if test="coId != null "> and co_id = #{coId}</if>
+            <if test="oId != null "> and o_id = #{oId}</if>
+            <if test="pName != null">and p_name = #{pName}</if>
+            <if test="coTotalAmount != null "> and co_total_amount = #{coTotalAmount}</if>
+            <if test="coPayType != null "> and co_pay_type = #{coPayType}</if>
+            <if test="coStatus != null "> and co_status = #{coStatus}</if>
+            <if test="createTime != null "> and create_time = #{createTime}</if>
+        </where>
+    </select>
+    
+    <select id="selectPayChargeableByCoId" parameterType="Long" resultMap="PayChargeableResult">
+        <include refid="selectPayChargeableVo"/>
+        where o_id = #{oId}
+    </select>
+        
+    <insert id="insertPayChargeable" parameterType="PayChargeable" useGeneratedKeys="true" keyProperty="coId">
+        insert into pay_chargeable
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="coId != null">co_id,</if>
+            <if test="oId != null">o_id,</if>
+            <if test="pName != null">p_name,</if>
+            <if test="coTotalAmount != null">co_total_amount,</if>
+            <if test="coPayType != null">co_pay_type,</if>
+            <if test="coStatus != null">co_status,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="isDeleted != null">is_deleted,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="coId != null">#{coId},</if>
+            <if test="oId != null">#{oId},</if>
+            <if test="pName != null">#{pName},</if>
+            <if test="coTotalAmount != null">#{coTotalAmount},</if>
+            <if test="coPayType != null">#{coPayType},</if>
+            <if test="coStatus != null">#{coStatus},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="isDeleted != null">#{isDeleted},</if>
+         </trim>
+    </insert>
+
+    <update id="updatePayChargeable" parameterType="PayChargeable">
+        update pay_chargeable
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="oId != null">o_id = #{oId},</if>
+            <if test="coTotalAmount != null">co_total_amount = #{coTotalAmount},</if>
+            <if test="coPayType != null">co_pay_type = #{coPayType},</if>
+            <if test="coStatus != null">co_status = #{coStatus},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="isDeleted != null">is_deleted = #{isDeleted},</if>
+        </trim>
+        where co_id = #{coId}
+    </update>
+
+    <delete id="deletePayChargeableByCoId" parameterType="Long">
+        delete from pay_chargeable where co_id = #{coId}
+    </delete>
+
+    <delete id="deletePayChargeableByCoIds" parameterType="String">
+        delete from pay_chargeable where co_id in 
+        <foreach item="coId" collection="array" open="(" separator="," close=")">
+            #{coId}
+        </foreach>
+    </delete>
+</mapper>

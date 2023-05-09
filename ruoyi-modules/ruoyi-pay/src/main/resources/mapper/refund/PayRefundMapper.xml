@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hj.pay.mapper.PayRefundMapper">
+    
+    <resultMap type="PayRefund" id="PayRefundResult">
+        <result property="roId"    column="ro_id"    />
+        <result property="oId"    column="o_id"    />
+        <result property="coId"    column="co_id"    />
+        <result property="pName" column="p_name" />
+        <result property="roTotalAmonut"    column="ro_total_amonut"    />
+        <result property="roStatus"    column="ro_status"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="isDeleted"    column="is_deleted"    />
+    </resultMap>
+
+    <sql id="selectPayRefundVo">
+        select ro_id, o_id, co_id, p_name, ro_total_amonut, ro_status, create_time, update_time, is_deleted from pay_refund
+    </sql>
+
+    <select id="selectPayRefundList" parameterType="PayRefund" resultMap="PayRefundResult">
+        <include refid="selectPayRefundVo"/>
+        <where>  
+            <if test="oId != null "> and o_id = #{oId}</if>
+            <if test="coId != null "> and co_id = #{coId}</if>
+            <if test="roTotalAmonut != null "> and ro_total_amonut = #{roTotalAmonut}</if>
+            <if test="roStatus != null "> and ro_status = #{roStatus}</if>
+        </where>
+    </select>
+    
+    <select id="selectPayRefundByRoId" parameterType="Long" resultMap="PayRefundResult">
+        <include refid="selectPayRefundVo"/>
+        where ro_id = #{roId}
+    </select>
+        
+    <insert id="insertPayRefund" parameterType="PayRefund" useGeneratedKeys="true" keyProperty="roId">
+        insert into pay_refund
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="roId != null">ro_id,</if>
+            <if test="oId != null">o_id,</if>
+            <if test="coId != null">co_id,</if>
+            <if test="pName != null">p_name,</if>
+            <if test="roTotalAmonut != null">ro_total_amonut,</if>
+            <if test="roStatus != null">ro_status,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="isDeleted != null">is_deleted,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="roId != null">#{roId},</if>
+            <if test="oId != null">#{oId},</if>
+            <if test="coId != null">#{coId},</if>
+            <if test="pName != null">#{pName},</if>
+            <if test="roTotalAmonut != null">#{roTotalAmonut},</if>
+            <if test="roStatus != null">#{roStatus},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="isDeleted != null">#{isDeleted},</if>
+         </trim>
+    </insert>
+
+    <update id="updatePayRefund" parameterType="PayRefund">
+        update pay_refund
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="oId != null">o_id = #{oId},</if>
+            <if test="coId != null">co_id = #{coId},</if>
+            <if test="roTotalAmonut != null">ro_total_amonut = #{roTotalAmonut},</if>
+            <if test="roStatus != null">ro_status = #{roStatus},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="isDeleted != null">is_deleted = #{isDeleted},</if>
+        </trim>
+        where ro_id = #{roId}
+    </update>
+
+    <delete id="deletePayRefundByRoId" parameterType="Long">
+        delete from pay_refund where ro_id = #{roId}
+    </delete>
+
+    <delete id="deletePayRefundByRoIds" parameterType="String">
+        delete from pay_refund where ro_id in 
+        <foreach item="roId" collection="array" open="(" separator="," close=")">
+            #{roId}
+        </foreach>
+    </delete>
+</mapper>
